@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toplistmusicas | Músicas muito bem avaliadas</title>
+  <meta name="description" content="Lista de 12 músicas muito bem avaliadas em quatro categorias, com formulário para sugerir novas faixas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <nav aria-label="Principal">
+      <a class="marca" href="#inicio">Toplistmusicas</a>
+      <ul>
+        <li><a href="#resumo">Resumo</a></li>
+        <li><a href="#rock">Rock</a></li>
+        <li><a href="#mpb">MPB</a></li>
+        <li><a href="#pop">Pop</a></li>
+        <li><a href="#hiphop-eletronica">Hip hop e eletrônica</a></li>
+        <li><a href="#sugerir">Sugerir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <section id="inicio" class="hero" aria-labelledby="t-inicio">
+      <div>
+        <h1 id="t-inicio">As músicas que merecem o repeat</h1>
+        <p>Doze músicas muito bem avaliadas, organizadas em quatro categorias. Veja a nota, leia o resumo e ouça.</p>
+      </div>
+      <div class="disco" aria-hidden="true"></div>
+    </section>
+
+    <section id="resumo" aria-labelledby="t-resumo">
+      <h2 id="t-resumo">Resumo da lista</h2>
+      <dl id="painel" class="painel"></dl>
+    </section>
+
+    <section id="rock" aria-labelledby="t-rock">
+      <h2 id="t-rock">Rock</h2>
+      <div class="grade" data-categoria="Rock"></div>
+    </section>
+
+    <section id="mpb" aria-labelledby="t-mpb">
+      <h2 id="t-mpb">MPB</h2>
+      <div class="grade" data-categoria="MPB"></div>
+    </section>
+
+    <section id="pop" aria-labelledby="t-pop">
+      <h2 id="t-pop">Pop</h2>
+      <div class="grade" data-categoria="Pop"></div>
+    </section>
+
+    <section id="hiphop-eletronica" aria-labelledby="t-hiphop">
+      <h2 id="t-hiphop">Hip hop e eletrônica</h2>
+      <div class="grade" data-categoria="Hip hop e eletrônica"></div>
+    </section>
+
+    <section id="sugerir" aria-labelledby="t-sugerir">
+      <h2 id="t-sugerir">Sugerir uma música</h2>
+      <form id="form-sugestao" novalidate>
+        <fieldset>
+          <legend>Dados da música</legend>
+
+          <div class="campo">
+            <label for="titulo">Nome da música</label>
+            <input id="titulo" name="titulo" type="text" autocomplete="off" aria-describedby="erro-titulo">
+            <span class="erro" id="erro-titulo"></span>
+          </div>
+
+          <div class="campo">
+            <label for="artista">Artista ou banda</label>
+            <input id="artista" name="artista" type="text" autocomplete="off" aria-describedby="erro-artista">
+            <span class="erro" id="erro-artista"></span>
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoria</label>
+            <select id="categoria" name="categoria" aria-describedby="erro-categoria">
+              <option value="">Escolha uma categoria</option>
+              <option>Rock</option>
+              <option>MPB</option>
+              <option>Pop</option>
+              <option>Hip hop e eletrônica</option>
+            </select>
+            <span class="erro" id="erro-categoria"></span>
+          </div>
+
+          <div class="campo">
+            <label for="nota">Nota (0 a 10)</label>
+            <input id="nota" name="nota" type="number" min="0" max="10" step="0.1" inputmode="decimal" aria-describedby="erro-nota">
+            <span class="erro" id="erro-nota"></span>
+          </div>
+
+          <div class="campo">
+            <label for="link">Link para ouvir (opcional)</label>
+            <input id="link" name="link" type="url" placeholder="https://" aria-describedby="erro-link">
+            <span class="erro" id="erro-link"></span>
+          </div>
+
+          <div class="campo">
+            <label for="resumo-sugestao">Por que ela merece estar na lista? (opcional)</label>
+            <textarea id="resumo-sugestao" name="resumo" rows="3" maxlength="200"></textarea>
+          </div>
+        </fieldset>
+
+        <button type="submit">Adicionar à lista</button>
+        <p id="status-form" class="status" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>Feito por José Ferreira da Silva Neto.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

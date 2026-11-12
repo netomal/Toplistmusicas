@@ -1,0 +1,224 @@
+"use strict";
+
+const CHAVE_SUGESTOES = "toplistmusicas:sugestoes";
+const CATEGORIAS = ["Rock", "MPB", "Pop", "Hip hop e eletrônica"];
+
+const musicas = [
+  { titulo: "Bohemian Rhapsody", artista: "Queen", categoria: "Rock", nota: 9.8,
+    resumo: "Seis minutos que misturam balada, ópera e rock pesado em uma única faixa." },
+  { titulo: "Tempo Perdido", artista: "Legião Urbana", categoria: "Rock", nota: 9.4,
+    resumo: "Hino do rock brasileiro sobre juventude, tempo e recomeços." },
+  { titulo: "Smells Like Teen Spirit", artista: "Nirvana", categoria: "Rock", nota: 9.2,
+    resumo: "O riff que levou o grunge para o mundo em 1991." },
+
+  { titulo: "Construção", artista: "Chico Buarque", categoria: "MPB", nota: 9.7,
+    resumo: "Conta o último dia de um operário, com versos que terminam em palavras trocadas a cada repetição." },
+  { titulo: "Oceano", artista: "Djavan", categoria: "MPB", nota: 9.5,
+    resumo: "Balada de 1989 com melodia marcante e uma das letras mais lembradas da música brasileira." },
+  { titulo: "Garota de Ipanema", artista: "Tom Jobim e Vinicius de Moraes", categoria: "MPB", nota: 9.3,
+    resumo: "Clássico da bossa nova e uma das músicas brasileiras mais gravadas no mundo." },
+
+  { titulo: "Billie Jean", artista: "Michael Jackson", categoria: "Pop", nota: 9.7,
+    resumo: "Linha de baixo inconfundível e um dos maiores sucessos do álbum Thriller." },
+  { titulo: "Like a Prayer", artista: "Madonna", categoria: "Pop", nota: 9.1,
+    resumo: "Mistura pop, gospel e rock em um dos marcos da carreira de Madonna." },
+  { titulo: "I Wanna Dance with Somebody", artista: "Whitney Houston", categoria: "Pop", nota: 9.0,
+    resumo: "Energia contagiante e vocal poderoso em um clássico das pistas de dança." },
+
+  { titulo: "Diário de um Detento", artista: "Racionais MC's", categoria: "Hip hop e eletrônica", nota: 9.6,
+    resumo: "Relato sobre o massacre do Carandiru e um dos maiores clássicos do rap nacional." },
+  { titulo: "One More Time", artista: "Daft Punk", categoria: "Hip hop e eletrônica", nota: 9.3,
+    resumo: "Hino da house francesa, com vocais processados e clima de festa." },
+  { titulo: "HUMBLE.", artista: "Kendrick Lamar", categoria: "Hip hop e eletrônica", nota: 9.0,
+    resumo: "Batida minimalista e letra direta, um dos maiores sucessos do álbum DAMN." }
+];
+
+/* ---------- Armazenamento das sugestões ---------- */
+function carregarSugestoes() {
+  try {
+    const dados = JSON.parse(localStorage.getItem(CHAVE_SUGESTOES));
+    return Array.isArray(dados) ? dados : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function salvarSugestoes(lista) {
+  try {
+    localStorage.setItem(CHAVE_SUGESTOES, JSON.stringify(lista));
+  } catch (e) {
+    /* sem armazenamento: a sugestão vale só nesta visita */
+  }
+}
+
+let sugestoes = carregarSugestoes();
+const todas = () => [...musicas, ...sugestoes];
+
+/* ---------- Regras da lista ---------- */
+function classificar(nota) {
+  if (nota >= 9.5) return "Obra-prima";
+  if (nota >= 9) return "Excelente";
+  if (nota >= 8) return "Muito boa";
+  return "Boa";
+}
+
+function linkDaMusica(m) {
+  return m.link || "https://www.youtube.com/results?search_query=" +
+    encodeURIComponent(m.titulo + " " + m.artista);
+}
+
+function melhorDe(lista) {
+  return lista.reduce((a, b) => (b.nota > a.nota ? b : a));
+}
+
+/* ---------- Criação de elementos (sem innerHTML) ---------- */
+function el(tag, classe, texto) {
+  const e = document.createElement(tag);
+  if (classe) e.className = classe;
+  if (texto !== undefined) e.textContent = texto;
+  return e;
+}
+
+function criarCartao(m, ehMelhor) {
+  const cartao = el("article", "cartao" + (ehMelhor ? " melhor" : ""));
+  cartao.append(el("div", "nota", m.nota.toFixed(1)));
+
+  const cab = el("div");
+  cab.append(el("h3", "", m.titulo), el("p", "artista", m.artista));
+  cartao.append(cab);
+
+  cartao.append(el("p", "resumo", m.resumo));
+
+  const faixa = el("div", "faixa");
+  faixa.append(el("span", "classe", classificar(m.nota)));
+  if (ehMelhor) faixa.append(el("span", "selo", "Melhor da categoria"));
+
+  const a = el("a", "", "Ouvir");
+  a.href = linkDaMusica(m);
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  a.setAttribute("aria-label", "Ouvir " + m.titulo + " de " + m.artista + " (abre em nova aba)");
+  faixa.append(a);
+
+  cartao.append(faixa);
+  return cartao;
+}
+
+/* ---------- Renderização ---------- */
+function renderizarCategorias() {
+  const lista = todas();
+  document.querySelectorAll(".grade").forEach((grade) => {
+    const daCategoria = lista
+      .filter((m) => m.categoria === grade.dataset.categoria)
+      .sort((a, b) => b.nota - a.nota);
+
+    const campea = daCategoria.length ? melhorDe(daCategoria) : null;
+    grade.replaceChildren(...daCategoria.map((m) => criarCartao(m, m === campea)));
+  });
+}
+
+function renderizarPainel() {
+  const lista = todas();
+  const media = lista.reduce((soma, m) => soma + m.nota, 0) / lista.length;
+  const campea = melhorDe(lista);
+  const comNotaAlta = lista.filter((m) => m.nota >= 9).length;
+  const artistas = new Set(lista.map((m) => m.artista)).size;
+
+  const itens = [
+    ["Músicas na lista", String(lista.length), ""],
+    ["Nota média", media.toFixed(1), ""],
+    ["Com nota 9 ou mais", String(comNotaAlta), ""],
+    ["Artistas diferentes", String(artistas), ""],
+    ["Melhor nota", campea.titulo, campea.artista + " (" + campea.nota.toFixed(1) + ")"]
+  ];
+
+  const painel = document.getElementById("painel");
+  painel.replaceChildren(...itens.map(([rotulo, valor, detalhe]) => {
+    const bloco = el("div");
+    const dd = el("dd", "", valor);
+    if (detalhe) dd.append(el("small", "", detalhe));
+    bloco.append(el("dt", "", rotulo), dd);
+    return bloco;
+  }));
+}
+
+function renderizar() {
+  renderizarCategorias();
+  renderizarPainel();
+}
+
+/* ---------- Formulário de sugestão ---------- */
+const form = document.getElementById("form-sugestao");
+const statusForm = document.getElementById("status-form");
+const CAMPOS = ["titulo", "artista", "categoria", "nota", "link"];
+
+function linkValido(texto) {
+  try {
+    const u = new URL(texto);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch (e) {
+    return false;
+  }
+}
+
+function validar(d) {
+  const erros = {};
+  if (d.titulo.length < 2) erros.titulo = "Informe o nome da música, com pelo menos 2 letras.";
+  if (d.artista.length < 2) erros.artista = "Informe o artista ou a banda.";
+  if (!CATEGORIAS.includes(d.categoria)) erros.categoria = "Escolha uma das categorias.";
+  const nota = Number(d.nota);
+  if (d.nota === "" || Number.isNaN(nota) || nota < 0 || nota > 10) erros.nota = "Digite uma nota entre 0 e 10.";
+  if (d.link && !linkValido(d.link)) erros.link = "Use um link completo, começando com http:// ou https://.";
+  return erros;
+}
+
+function mostrarErros(erros) {
+  CAMPOS.forEach((nome) => {
+    const campo = form.elements[nome];
+    const msg = document.getElementById("erro-" + nome);
+    msg.textContent = erros[nome] || "";
+    if (erros[nome]) campo.setAttribute("aria-invalid", "true");
+    else campo.removeAttribute("aria-invalid");
+  });
+}
+
+form.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+
+  const dados = {
+    titulo: form.elements.titulo.value.trim(),
+    artista: form.elements.artista.value.trim(),
+    categoria: form.elements.categoria.value,
+    nota: form.elements.nota.value.trim(),
+    link: form.elements.link.value.trim(),
+    resumo: form.elements.resumo.value.trim()
+  };
+
+  const erros = validar(dados);
+  mostrarErros(erros);
+
+  const nomesComErro = Object.keys(erros);
+  if (nomesComErro.length) {
+    statusForm.className = "status falha";
+    statusForm.textContent = "Corrija os campos indicados e envie de novo.";
+    form.elements[nomesComErro[0]].focus();
+    return;
+  }
+
+  sugestoes.push({
+    titulo: dados.titulo,
+    artista: dados.artista,
+    categoria: dados.categoria,
+    nota: Number(dados.nota),
+    resumo: dados.resumo || "Sugestão adicionada por você.",
+    link: dados.link
+  });
+  salvarSugestoes(sugestoes);
+
+  form.reset();
+  renderizar();
+  statusForm.className = "status ok";
+  statusForm.textContent = "“" + dados.titulo + "” foi adicionada à categoria " + dados.categoria + ".";
+});
+
+renderizar();

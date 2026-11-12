@@ -1,0 +1,159 @@
+:root {
+  --fundo: #1b1030;
+  --superficie: #2a1a47;
+  --borda: #43296f;
+  --texto: #f3ecff;
+  --suave: #b9a9d6;
+  --destaque: #ffb703;
+  --erro: #ff9db0;
+  --ok: #5bd6a0;
+  --raio: 14px;
+  --vinil: repeating-radial-gradient(circle, #0d0719 0 2px, #1c1030 2px 4px);
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: "DM Sans", system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h3 { font-family: "Bricolage Grotesque", "DM Sans", system-ui, sans-serif; line-height: 1.15; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 800; }
+h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 1.25rem; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+
+a { color: var(--destaque); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+.pular { position: absolute; left: -999px; background: var(--destaque); color: #1b1030; padding: .5rem 1rem; z-index: 20; }
+.pular:focus { left: 1rem; top: 1rem; }
+
+/* Menu fixo com Flexbox */
+.topo { position: sticky; top: 0; z-index: 10; background: rgba(27, 16, 48, .95); border-bottom: 1px solid var(--borda); }
+.topo nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; width: min(68rem, 100% - 2rem); margin-inline: auto; padding-block: .75rem; }
+.marca { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--texto); text-decoration: none; }
+.topo ul { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; list-style: none; padding: 0; }
+.topo li a { color: var(--suave); text-decoration: none; padding: .25rem 0; }
+.topo li a:hover { color: var(--texto); }
+
+/* Layout geral com Grid */
+main { width: min(68rem, 100% - 2rem); margin-inline: auto; display: grid; gap: 3.5rem; padding-block: 3rem 4rem; }
+
+.hero { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2rem; }
+.hero p { margin-top: 1rem; max-width: 36rem; color: var(--suave); font-size: 1.1rem; }
+
+.disco {
+  width: clamp(9rem, 22vw, 14rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #1b1030 0 3%, var(--destaque) 3% 17%, transparent 17%),
+    conic-gradient(transparent 0 20%, rgba(255, 255, 255, .14) 25%, transparent 30% 70%, rgba(255, 255, 255, .14) 75%, transparent 80%),
+    var(--vinil);
+  box-shadow: 0 0 0 1px var(--borda);
+  animation: girar 9s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* Painel de resumo */
+.painel { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1rem; }
+.painel div { background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); padding: 1rem 1.25rem; }
+.painel dt { color: var(--suave); font-size: .95rem; }
+.painel dd { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.5rem; font-weight: 800; overflow-wrap: anywhere; }
+.painel dd small { display: block; font-family: "DM Sans", sans-serif; font-size: .9rem; font-weight: 400; color: var(--suave); }
+
+/* Grade responsiva de cards */
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
+
+.cartao {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-content: start;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1.25rem;
+}
+.cartao:hover { border-color: var(--suave); }
+.cartao.melhor { border-color: var(--destaque); box-shadow: 0 0 0 1px var(--destaque); }
+
+.nota {
+  display: grid;
+  place-items: center;
+  width: 3.8rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--destaque) 0 56%, transparent 57%), var(--vinil);
+  color: #1b1030;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.artista { color: var(--suave); font-size: .95rem; }
+.cartao p.resumo { grid-column: 1 / -1; }
+.faixa { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; align-items: center; font-size: .95rem; }
+.classe { color: var(--suave); }
+.selo { background: var(--destaque); color: #1b1030; border-radius: 999px; padding: .1rem .7rem; font-weight: 500; font-size: .85rem; }
+
+/* Formulário */
+form { max-width: 38rem; }
+fieldset { border: 1px solid var(--borda); border-radius: var(--raio); padding: 1.25rem; display: grid; gap: 1rem; margin-bottom: 1.25rem; }
+legend { padding-inline: .5rem; font-weight: 500; }
+.campo { display: grid; gap: .3rem; }
+label { font-weight: 500; }
+input, select, textarea {
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: .6rem .8rem;
+  width: 100%;
+}
+input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--erro); }
+.erro { color: var(--erro); font-size: .9rem; min-height: 0; }
+
+button {
+  font: inherit;
+  font-weight: 500;
+  background: var(--destaque);
+  color: #1b1030;
+  border: 0;
+  border-radius: 999px;
+  padding: .7rem 1.6rem;
+  cursor: pointer;
+}
+button:hover { filter: brightness(1.1); }
+
+.status { margin-top: 1rem; min-height: 1.5rem; }
+.status.ok { color: var(--ok); }
+.status.falha { color: var(--erro); }
+
+.rodape { border-top: 1px solid var(--borda); padding: 1.5rem 1rem; text-align: center; color: var(--suave); }
+
+/* Telas estreitas */
+@media (max-width: 40rem) {
+  .hero { grid-template-columns: 1fr; }
+  .disco { width: 8rem; order: -1; }
+  .topo nav { justify-content: center; }
+  main { padding-block: 2rem 3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disco { animation: none; }
+  html { scroll-behavior: auto; }
+}
