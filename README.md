@@ -46,3 +46,6 @@ Edite o array `musicas` em `js/main.js` para trocar músicas, notas e resumos. A
 ## Autor
 
 **José Ferreira da Silva Neto**
+
+# Avaliador Glauco Souza Monteiro
+Ótimo projeto, com HTML semântico e acessível (`header`, `nav`, `main`, `section`, `footer`, `fieldset`/`label` e atributos ARIA), CSS bem organizado (variáveis, Flexbox e Grid responsivo) e JavaScript limpo (uso de `map`, `filter`, `reduce`, validação de formulário e `localStorage`). Pontos a corrigir: organizar os arquivos nas pastas `css/style.css` e `js/main.js` conforme chamado no HTML, e incluir itens exigidos pelo roteiro que faltaram (`required` nos campos do formulário, `<table>`, `<img>`, `reset.css` separado e os estados `a:link`, `a:visited` e `a:active`).
